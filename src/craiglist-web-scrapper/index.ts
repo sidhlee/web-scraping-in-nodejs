@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer'
+import cheerio from 'cheerio'
 
 const scrapingResults = [
   {
@@ -18,7 +19,18 @@ You are responsible for the domestic frozen seafood market. The ideal candidate 
 export default async function main() {
   // initialize and open up browser (chromium)
   const browser = await puppeteer.launch({ headless: false })
-  // visit url
+  // create a new page instance
   const page = await browser.newPage()
-  await page.goto('https://www.google.com')
+  // visit the page you want to scrape
+  await page.goto('https://toronto.craigslist.org/d/for-sale/search/tor/jjj')
+  // get the page html
+  const html = await page.content()
+  // load the page into cheerio
+  const $ = cheerio.load(html)
+
+  // Now go to the browser devtool console & try getting the result you want
+  // When successful, copy the code from the devtool console
+  $('.result-title ').each((i, titleEl) => {
+    console.log($(titleEl).text())
+  })
 }
