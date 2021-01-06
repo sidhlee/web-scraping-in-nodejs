@@ -15,13 +15,17 @@ You are responsible for the domestic frozen seafood market. The ideal candidate 
   },
 ]
 
+type Job = {
+  title: string
+  datePosted: Date
+  neighborhood: string
+  url: string
+  jobDescription: string
+  compensation: string
+}
+
 // Using puppeteer instead of request because Craiglist has been blocking scraping IP addresses
-export default async function main() {
-  // initialize and open up browser (chromium)
-  const browser = await puppeteer.launch({ headless: false })
-  // create a new page instance
-  const page = await browser.newPage()
-  // visit the page you want to scrape
+async function scrapePage(page: puppeteer.Page) {
   await page.goto('https://toronto.craigslist.org/d/for-sale/search/tor/jjj')
   // get the page html
   const html = await page.content()
@@ -37,7 +41,7 @@ export default async function main() {
   //   console.log($(titleEl).attr('href'))
   // })
 
-  const results = $('.result-info')
+  const listings = $('.result-info')
     .map((i, divEl) => {
       const linkEl = $(divEl).find('.result-title')
       const title = $(linkEl).text()
@@ -55,7 +59,7 @@ export default async function main() {
     })
     .get()
 
-  console.log(results)
+  return listings
 }
 function cleanUp(str: string): string {
   let cleaned
@@ -67,4 +71,19 @@ function cleanUp(str: string): string {
     cleaned = cleaned.slice(0, -1)
   }
   return cleaned
+}
+
+export default async function main() {
+  // initialize and open up browser (chromium)
+  const browser = await puppeteer.launch({ headless: false })
+  // create a new page instance
+  const page = await browser.newPage()
+  // visit the page you want to scrape
+
+  const listings = await scrapePage(page)
+}
+
+async function sleep(ms: number) {
+  const jitter = Math.random() * 2000 // add random delay between 0 - 2 seconds
+  return new Promise((resolve) => setTimeout(resolve, ms + jitter))
 }
