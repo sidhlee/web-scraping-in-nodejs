@@ -1,12 +1,3 @@
-import express from 'express'
+import scrapeTable from './scraping-tables-with-request-and-cheerio'
 
-const app = express()
-const port = process.env.PORT || 5000
-
-app.use('/', (req, res, next) => {
-  res.status(200).send({ data: 'Hello Express' })
-})
-
-console.log(process.env.TEST)
-
-app.listen(port, () => console.log(`Server is up on port ${port}`))
+scrapeTable()
