@@ -30,7 +30,41 @@ export default async function main() {
 
   // Now go to the browser devtool console & try getting the result you want
   // When successful, copy the code from the devtool console
-  $('.result-title ').each((i, titleEl) => {
-    console.log($(titleEl).text())
-  })
+  // $('.result-title ').each((i, titleEl) => {
+  //   console.log($(titleEl).text())
+  // })
+  // $('.result-title ').each((i, titleEl) => {
+  //   console.log($(titleEl).attr('href'))
+  // })
+
+  const results = $('.result-info')
+    .map((i, divEl) => {
+      const linkEl = $(divEl).find('.result-title')
+      const title = $(linkEl).text()
+      const url = $(linkEl).attr('href')
+
+      const timeEl = $(divEl).find('.result-date')
+      const datePosted = new Date($(timeEl).attr('datetime') as string)
+
+      const hoodEl = $(divEl).find('.result-hood')
+      const neighborhood = cleanUp(hoodEl.text())
+
+      const job = { title, url, datePosted, neighborhood }
+
+      return job
+    })
+    .get()
+
+  console.log(results)
+}
+function cleanUp(str: string): string {
+  let cleaned
+  cleaned = str.trim()
+  if (cleaned[0] === '(') {
+    cleaned = cleaned.slice(1)
+  }
+  if (cleaned.slice(-1) === ')') {
+    cleaned = cleaned.slice(0, -1)
+  }
+  return cleaned
 }
