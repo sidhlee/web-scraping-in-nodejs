@@ -1,3 +1,3 @@
-import scrapeTable from './scraping-tables-with-request-and-cheerio'
+import scrapeCraiglist from './craiglist-web-scrapper'
 
-scrapeTable()
+scrapeCraiglist()
