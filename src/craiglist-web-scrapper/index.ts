@@ -24,6 +24,57 @@ type Job = {
   compensation: string
 }
 
+/**
+ * Go to individual listing page and scape job description and compensation info
+ */
+async function addJobDescriptionAndCompensation(
+  listings: Exclude<Job, 'jobDescription' | 'compensation'>[],
+  page: puppeteer.Page,
+  maxListings: number = 10
+): Promise<Job[] | undefined> {
+  try {
+    const completeListings = []
+    if (maxListings < 0 || !Number.isInteger(maxListings)) {
+      throw new Error('maxListing should be a non-negative integer.')
+    }
+
+    const numIter = Math.min(maxListings, listings.length)
+
+    for (let i = 0; i < numIter; i++) {
+      await page.goto(listings[i].url)
+      const jobPage = await page.content()
+      const $ = cheerio.load(jobPage)
+      const jobDescription = $('#postingbody')
+        .contents()
+        .filter(function (this: Node) {
+          return this.nodeType !== 1
+        })
+        .text()
+        .trim()
+      const compensation = $('div.mapAndAttrs > p > span:nth-child(1)')
+        .text()
+        .replace('compensation:', '')
+        .trim()
+
+      const completeListing = {
+        ...listings[i],
+        jobDescription,
+        compensation,
+      }
+      console.log(completeListing)
+      completeListings.push(completeListing)
+
+      await sleep(2000) // sleep for 2 + 0-2 seconds
+      await page.goBack()
+    }
+
+    return completeListings
+  } catch (err) {
+    console.log(err)
+    return undefined
+  }
+}
+
 // Using puppeteer instead of request because Craiglist has been blocking scraping IP addresses
 async function scrapePage(page: puppeteer.Page) {
   await page.goto('https://toronto.craigslist.org/d/for-sale/search/tor/jjj')
@@ -61,6 +112,7 @@ async function scrapePage(page: puppeteer.Page) {
 
   return listings
 }
+
 function cleanUp(str: string): string {
   let cleaned
   cleaned = str.trim()
@@ -81,6 +133,11 @@ export default async function main() {
   // visit the page you want to scrape
 
   const listings = await scrapePage(page)
+  const completeListings = await addJobDescriptionAndCompensation(
+    listings,
+    page
+  )
+  console.log(completeListings)
 }
 
 async function sleep(ms: number) {
