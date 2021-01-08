@@ -1,3 +1,3 @@
-import scrapeCraiglist from './craiglist-web-scrapper'
+import scrapeJobListingAndSaveToFile from './tdd-scraper/getter'
 
-scrapeCraiglist()
+scrapeJobListingAndSaveToFile()
