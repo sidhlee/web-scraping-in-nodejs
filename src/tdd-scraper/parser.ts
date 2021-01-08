@@ -3,7 +3,7 @@ import { cleanUp } from '../craiglist-web-scrapper'
 
 // export const add = (a: number, b: number) => a + b
 
-export const listings = (html: string) => {
+export const listings = (html: Buffer) => {
   const $ = cheerio.load(html)
   const listings = $('.result-info')
     .map((i, infoDiv) => {

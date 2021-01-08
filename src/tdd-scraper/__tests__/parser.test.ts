@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import { IListing } from 'craiglist-web-scrapper/models/listing'
 
-let html: string, listings: IListing[]
+let html: Buffer, listings: IListing[]
 
 beforeAll(() => {
   // load fetched html
