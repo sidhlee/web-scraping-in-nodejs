@@ -13,6 +13,8 @@ export const getHtml = async (url: string): Promise<any> => {
 }
 
 export const saveHtmlToFile = async (html: string) => {
+  // Save with absolute path because we want to save the file to the current folder.
+  // Relative path could be changing based on the location of the file that calls this function.
   const saveTo = path.join(__dirname, 'test.html')
   fs.writeFileSync(saveTo, html)
 }
