@@ -6,8 +6,10 @@ import { IListing } from 'craiglist-web-scrapper/models/listing'
 let html: string, listings: IListing[]
 
 beforeAll(() => {
+  // load fetched html
   const filePath = path.join(__dirname, '../test.html')
   html = fs.readFileSync(filePath)
+  // parse html into a data that we can test against
   listings = parser.listings(html)
 })
 
@@ -26,6 +28,7 @@ beforeAll(() => {
 //   expect(result).toBe(4)
 // })
 
+// test if the function returns what it's supposed to
 it('should give the correct listing object', () => {
   expect(listings.length).toBe(120)
 })
@@ -47,3 +50,5 @@ it('should get neighborhood from listing', () => {
 it('should get correct date from listing', () => {
   expect(listings[0].datePosted).toBe(new Date('2021-01-08 12:47'))
 })
+
+// Now you can start implementing the actual function to the data
