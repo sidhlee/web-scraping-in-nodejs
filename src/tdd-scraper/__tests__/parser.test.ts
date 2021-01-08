@@ -48,7 +48,8 @@ it('should get neighborhood from listing', () => {
 })
 
 it('should get correct date from listing', () => {
-  expect(listings[0].datePosted).toBe(new Date('2021-01-08 12:47'))
+  // toBe compares reference
+  expect(listings[0].datePosted).toMatchObject(new Date('2021-01-08 12:47'))
 })
 
 // Now you can start implementing the actual function to the data

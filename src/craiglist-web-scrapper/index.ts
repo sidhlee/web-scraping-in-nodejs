@@ -133,7 +133,7 @@ async function scrapeListingsPage(page: puppeteer.Page) {
  * Cleans up leading & tailing parenthesis if any
  * @param str
  */
-function cleanUp(str: string): string {
+export function cleanUp(str: string): string {
   let cleaned
   cleaned = str.trim()
   if (cleaned[0] === '(') {
